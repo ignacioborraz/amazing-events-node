@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
+const eventRouter = require('./events')
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Amazing Events' });
 });
+
+router.use('/events',eventRouter)
 
 module.exports = router;
