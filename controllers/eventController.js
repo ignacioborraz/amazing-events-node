@@ -2,7 +2,18 @@ const Event = require('../models/Event')
 
 const eventController = {
     create: async (req, res) => {
-        //const {name,image,date,description,category,place,capacity,estimated,price} = req.body
+        const {
+            name,
+            image,
+            date,
+            description,
+            category,
+            place,
+            capacity,
+            estimated,
+            price
+        } = req.body
+
         try {
             await new Event(req.body).save()
 
@@ -18,10 +29,31 @@ const eventController = {
         }
     },
 
+    all: async (req, res) => {
+        let events
+        let query = {}
+
+        if (req.query.capacity) {
+            query.capacity = req.query.capacity
+        }
+
+        if (req.query.name) {
+            query.name = req.query.name
+        }
+
+        try {
+            events = await Event.find(query)
+
+            res.json(events)
+        } catch (err) {
+            console.log(err)
+            res.status(500).json()
+        }
+    },
+
     read: async (req, res) => {
-        const {
-            id
-        } = req.params
+        const {id} = req.params
+
         try {
             let event = await Event.findOne({
                 _id: id
