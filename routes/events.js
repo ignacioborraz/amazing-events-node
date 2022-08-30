@@ -1,22 +1,11 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express')
+var router = express.Router()
 
-//traerme el método con desestructuracion
-const {create,read} = require('../controllers/eventController') //acá me traigo una propiedad/metodo del objeto/controlador
+const {create,read,update,destroy} = require('../controllers/eventController')
 
-//traerme el método con el objeto entero
-/* 
-const eventsController = require('../controllers/eventController') //aca me traigo TODO el objeto/controlador
-const createController = eventsController.create
-const readController = eventsController.read
-const updateController = eventsController.update
-const destroyController = eventsController.destroy
- */
-
-//router.metodo('la ruta',controlador)
 router.post('/',create)
 router.get('/:id',read)
+router.patch('/:id',update)
+router.delete('/:id',destroy)
 
-//localhost8000/events/
-
-module.exports = router;
+module.exports = router
