@@ -33,8 +33,7 @@ const schema = new mongoose.Schema({
         type: Number
     },
     estimated: {
-        type: Number,
-        required: true
+        type: Number
     },
     price: {
         type: Number,
