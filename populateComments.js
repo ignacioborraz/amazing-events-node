@@ -6,5 +6,5 @@ Comment.create({
     comment: "",
     user: "",
     event: "",
-    date: ""
+    date: new Date()
 })
