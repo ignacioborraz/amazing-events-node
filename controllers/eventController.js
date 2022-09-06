@@ -79,6 +79,54 @@ const eventController = {
                 success: false
             })
         }
+    },
+    update: async(req,res) => {
+        const {id} = req.params
+        try {
+            let event = await Event.findOne({_id:id})
+            if (event) {
+                await Event.findOneAndUpdate({_id:id},req.body,{new: true})
+                res.status(200).json({
+                    message: "event updated",
+                    success: true
+                })
+            } else {
+                res.status(404).json({
+                    message: "could't find event",
+                    success: false
+                })
+            }
+        } catch(error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        }
+    },
+    destroy: async(req,res) => {
+        const {id} = req.params
+        try {
+            let event = await Event.findOne({_id:id})
+            if (event) {
+                await Event.findOneAndDelete({_id:id})
+                res.status(200).json({
+                    message: "event deleted",
+                    success: true
+                })
+            } else {
+                res.status(404).json({
+                    message: "could't find event",
+                    success: false
+                })
+            }
+        } catch(error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        }
     }
 }
 
