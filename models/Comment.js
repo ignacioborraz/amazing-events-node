@@ -6,11 +6,13 @@ const schema = new mongoose.Schema({
         required: true
     },
     user: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref: 'users',
         required: true
     },
     event: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref: 'events',
         required: true
     },
     date: {
