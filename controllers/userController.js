@@ -28,11 +28,12 @@
 const User = require('../models/User')
 const crypto = require('crypto') //recurso propio de nodeJS para generar códigos aleatorios y unicos
 const bcryptjs = require('bcryptjs') //recurso propio de nodeJS para hashear contraseñas
+const sendMail = require('./sendMail')
 
 const userController = {
 
     signUp: async(req,res) => {
-        const {
+        let {
             name,
             photo,
             email,
@@ -52,7 +53,7 @@ const userController = {
                 if (from==='form') {//si la data viene del formulario de registro
                     pass = bcryptjs.hashSync(pass,10) //utilizamos el método hashSync que requiere dos parametros
                     user = await new User({name,photo,email,pass:[pass],role,from:[from],logged,verified,code}).save() //modifico pass con el array
-                    //acá hay que incoporar la función para el envío de mail de verificacion
+                    sendMail(email,code)
                     res.status(201).json({
                         message: "user signed up from form",
                         success: true
@@ -103,3 +104,5 @@ const userController = {
     signOut: async() => {} //findOneAndUpdate y cambiar logged de true a false
 
 }
+
+module.exports = userController
