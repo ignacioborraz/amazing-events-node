@@ -39,10 +39,13 @@ const sendMail = async(mail,code) => {
         html: `
             <div>
                 <h1>Hola ${mail}</h1>
+                <a href='http://localhost:8000/auth/verify/${code}'>click to verify!</a>
             </div>
         ` //codigo HTML puro que se va a renderizar en el cuerpo del mail
         //en el cuerpo del html tengo que enviar un link hacia una direccion que verifique la clave unica de verificacion
         //ese link o endpoint es la que se conectará con el método correspondiente para la verificacion de la cuenta
+        //NO OLVIDAR HOSTEAR EL BACK PARA QUE FUNCIONE EL LINK DEL ANCHOR
+        //LOCALHOST SE TIENE QUE CAMBIAR POR LA URL HOSTEADA DE BACK
     }
 
     await transport.sendMail(mailOptions, (error,response)=>{
