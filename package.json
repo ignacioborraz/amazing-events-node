@@ -7,17 +7,43 @@
     "dev": "nodemon ./bin/www"
   },
   "dependencies": {
+<<<<<<< HEAD
     "bcryptjs": "^2.4.3",
+=======
+<<<<<<< HEAD
+    "bcryptjs": "^2.4.3",
+=======
+    "chai": "^4.3.6",
+>>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
+>>>>>>> 7b701f7d91e190efaa4c32928ec4e3c9d5b41d44
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^16.0.1",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
+<<<<<<< HEAD
     "googleapis": "^107.0.0",
     "http-errors": "~1.6.3",
     "mongoose": "^6.5.3",
     "morgan": "~1.9.1",
     "nodemailer": "^6.7.8"
+=======
+<<<<<<< HEAD
+    "googleapis": "^107.0.0",
+    "http-errors": "~1.6.3",
+    "mongoose": "^6.5.3",
+    "morgan": "~1.9.1",
+    "nodemailer": "^6.7.8"
+=======
+    "http-errors": "~1.6.3",
+    "mongoose": "^6.5.3",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "supertest": "^6.2.4"
+>>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
+>>>>>>> 7b701f7d91e190efaa4c32928ec4e3c9d5b41d44
   }
 }
