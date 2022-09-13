@@ -1,12 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const {signUp,verifyMail, signIn} = require('../controllers/userController')
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Amazing Events' });
-});
-
-router.use('/events', eventRouter)
-router.use('/auth',authRouter)
-router.use('/comments', commentRouter)
+/* GET users listing. */
+router.post('/signup',signUp);
+router.post('/signin', signIn);
+router.get('/verify/:code',verifyMail);
 
 module.exports = router;
