@@ -1,30 +1,34 @@
 const Event = require('../models/Event')
+const Joi = require('joi')
+
+const validator = Joi.object({
+    "name" : Joi.string(),
+    "image" : Joi.string().uri().message('INVALID_URL'),
+    "price" : Joi.number().integer().min(0).max(100000),
+    "capacity" : Joi.number().integer().min(10).max(50000),
+    "place" : Joi.string(),
+    "category" : Joi.string(),
+    "description" : Joi.string().min(0).max(300),
+    "date" : Joi.date().greater(new Date)
+})
 
 const eventController = {
     
     create: async (req, res) => {
-        const {
-            name,
-            image,
-            date,
-            description,
-            category,
-            place,
-            capacity,
-            estimated,
-            price
-        } = req.body
-
         try {
+            let result = await validator.validateAsync(req.body)
+
             let event = await new Event(req.body).save()
             res.status(201).json({
                 message: 'event created',
                 success: true,
-                id : event._id
+                id: event._id
             })
         } catch (error) {
+            // console.log(error)
+
             res.status(400).json({
-                message: "could't create event",
+                message: error.message,
                 success: false
             })
         }
@@ -53,13 +57,15 @@ const eventController = {
     },
 
     read: async (req, res) => {
-        const {id} = req.params
+        const {
+            id
+        } = req.params
 
         try {
             let event = await Event.findOne({
                 _id: id
             })
-            
+
             if (event) {
                 res.status(200).json({
                     message: "you get one event",
@@ -82,12 +88,20 @@ const eventController = {
         }
     },
 
-    update: async(req,res) => {
-        const {id} = req.params
+    update: async (req, res) => {
+        const {
+            id
+        } = req.params
         try {
-            let event = await Event.findOne({_id:id})
+            let event = await Event.findOne({
+                _id: id
+            })
             if (event) {
-                await Event.findOneAndUpdate({_id:id},req.body,{new: true})
+                await Event.findOneAndUpdate({
+                    _id: id
+                }, req.body, {
+                    new: true
+                })
                 res.status(200).json({
                     message: "event updated",
                     success: true
@@ -98,7 +112,7 @@ const eventController = {
                     success: false
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             res.status(400).json({
                 message: "error",
@@ -106,13 +120,19 @@ const eventController = {
             })
         }
     },
-
-    destroy: async(req,res) => {
-        const {id} = req.params
+    
+    destroy: async (req, res) => {
+        const {
+            id
+        } = req.params
         try {
-            let event = await Event.findOne({_id:id})
+            let event = await Event.findOne({
+                _id: id
+            })
             if (event) {
-                await Event.findOneAndDelete({_id:id})
+                await Event.findOneAndDelete({
+                    _id: id
+                })
                 res.status(200).json({
                     message: "event deleted",
                     success: true
@@ -123,7 +143,7 @@ const eventController = {
                     success: false
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             res.status(400).json({
                 message: "error",
