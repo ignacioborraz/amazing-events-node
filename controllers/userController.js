@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* 
 - logica del metodo de registro de usuario (de formulario O red social)
     - consultar si el mail existe en la base de datos
@@ -92,11 +93,37 @@ const userController = {
             console.log(error)
             res.status(400).json({
                 message: "could't signed up",
+=======
+const User = require('../models/User')
+
+const userController = {
+
+    create: async (req, res) => {
+        const {
+            name,
+            lastName,
+            email,
+            pass,
+            photo
+        } = req.body
+
+        try {
+            await new User(req.body).save()
+
+            res.status(201).json({
+                message: 'user created',
+                success: true
+            })
+        } catch (error) {
+            res.status(400).json({
+                message: "could't create user",
+>>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
                 success: false
             })
         }
     },
 
+<<<<<<< HEAD
     //el codigo unico y aleatorio generado en el metodo de signup
     //se pasa por params a este otro metodo para poder verificar la cuenta
     //luego de requerirlo lo comparo con los perfiles ya creados (lo busco en la base de datos)
@@ -116,22 +143,114 @@ const userController = {
             } else {
                 res.status(404).json({
                     message: "email has not account yet",
+=======
+    all: async (req, res) => {
+        try {
+            let users = await User.find()
+
+            res.status(200).json({
+                message: "you get users",
+                response: users,
+                success: true
+            })
+        } catch (err) {
+            console.log(err)
+            res.status(500).json()
+        }
+    },
+
+    read: async (req, res) => {
+        const {id} = req.params
+
+        try {
+            let user = await User.findOne({
+                _id: id
+            })
+            
+            if (user) {
+                res.status(200).json({
+                    message: "you get one user",
+                    response: user,
+                    success: true
+                })
+            } else {
+                res.status(404).json({
+                    message: "could't find user",
+                    success: false
+                })
+            }
+        } catch (error) {
+            console.log(error)
+
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        }
+    },
+
+    update: async(req,res) => {
+        const {id} = req.params
+        try {
+            let user = await User.findOne({_id:id})
+            if (user) {
+                await User.findOneAndUpdate({_id:id},req.body,{new: true})
+                res.status(200).json({
+                    message: "user updated",
+                    success: true
+                })
+            } else {
+                res.status(404).json({
+                    message: "could't find user",
+>>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
                     success: false
                 })
             }
         } catch(error) {
             console.log(error)
             res.status(400).json({
+<<<<<<< HEAD
                 message: "could't verify account",
+=======
+                message: "error",
+>>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
                 success: false
             })
         }
     },
+<<<<<<< HEAD
     
     signIn: async() => {},
 
     signOut: async() => {} //findOneAndUpdate y cambiar logged de true a false
 
+=======
+
+    destroy: async(req,res) => {
+        const {id} = req.params
+        try {
+            let user = await User.findOne({_id:id})
+            if (user) {
+                await User.findOneAndDelete({_id:id})
+                res.status(200).json({
+                    message: "user deleted",
+                    success: true
+                })
+            } else {
+                res.status(404).json({
+                    message: "could't find user",
+                    success: false
+                })
+            }
+        } catch(error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        }
+    }
+>>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
 }
 
 module.exports = userController
