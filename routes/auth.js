@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
-const {signUp,verifyMail} = require('../controllers/userController')
+const {signUp,verifyMail, signIn} = require('../controllers/userController')
 
 /* GET users listing. */
 router.post('/signup',signUp);
-router.get('/verify/:code',verifyMail)
+router.post('/signin', signIn);
+router.get('/verify/:code',verifyMail);
 
 module.exports = router;

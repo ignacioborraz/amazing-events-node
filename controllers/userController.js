@@ -122,12 +122,102 @@ const userController = {
             })
         }
     },
+    signIn: async(req, res) => {
+        const {email, password, from} = req.body
+
+        try {
+            const user = await User.findOne({email})
+
+            if(!user) { // Si usuario no existe
+                res.status(404).json({
+                    success: false,
+                    message: "User doesn't exists, please sign up"
+                })
+            } else if(user.verified) { // Si usuario existe y esta verificado
+
+                const checkPass = user.pass.filter(passwordElement => bcryptjs.compareSync(password, passwordElement))
+
+                if(from === 'form') { // Si el usuario intenta ingresar por FORM
+
+                    if(checkPass.length > 0) { // Si contraseña coincide
+
+                        const loginUser = {
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            photo: user.photo
+                        }
+
+                        user.logged = true
+                        await user.save()
+
+                        res.status(200).json({
+                            success: true,
+                            response: {user: loginUser},
+                            message: 'Welcome ' + user.name
+                        })
+
+
+                    } else { // Si contraseña no coincide
+                        res.status(400).json({
+                            success: false,
+                            message: 'Username or password incorrect'
+                        })
+                    }
+
+                } else { // Si el usuario intenta ingresar por RRSS
+                    if(checkPass.length > 0) { // Si contraseña coincide
+
+                        const loginUser = {
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            photo: user.photo
+                        }
+
+                        user.logged = true
+                        await user.save()
+
+                        res.status(200).json({
+                            success: true,
+                            response: {user: loginUser},
+                            message: 'Welcome ' + user.name
+                        })
+
+
+                    } else { // Si contraseña no coincide
+                        res.status(400).json({
+                            success: false,
+                            message: 'Invalid credentials'
+                        })
+                    }
+                }
+
+            } else { // Si usuario existe pero NO esta verificado
+                res.status(401).json({
+                    success: false,
+                    message: 'Please, verify your email account and try again'
+                })
+            }
+
+
+        } catch(error) {
+            console.log(error)
+            res.status(400).json({
+                success: false,
+                message: 'Sign In ERROR, try again later'
+            })
+        }
+
+    },
 
 <<<<<<< HEAD
     //el codigo unico y aleatorio generado en el metodo de signup
     //se pasa por params a este otro metodo para poder verificar la cuenta
     //luego de requerirlo lo comparo con los perfiles ya creados (lo busco en la base de datos)
-        //si encuentra el usuario cambio el verified de false a true
+    //si encuentra el usuario cambio el verified de false a true
         //si no lo encuentra avisar que el mail a verificar no tiene cuenta
     verifyMail: async(req,res) => {
         const {code} = req.params
@@ -220,7 +310,6 @@ const userController = {
     },
 <<<<<<< HEAD
     
-    signIn: async() => {},
 
     signOut: async() => {} //findOneAndUpdate y cambiar logged de true a false
 

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 
-<<<<<<< HEAD
 const schema = new mongoose.Schema ({
     name: {type:String, required:true},
     photo: {type:String, required:true},
@@ -15,32 +14,3 @@ const schema = new mongoose.Schema ({
 
 const User = mongoose.model('users',schema)
 module.exports = User
-=======
-const schema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    lastName: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    pass: {
-        type: String,
-        required: true
-    },
-    photo: {
-        type: String,
-        required: true
-    }
-})
-
-module.exports = mongoose.model(
-    'users',
-    schema
-)
->>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d

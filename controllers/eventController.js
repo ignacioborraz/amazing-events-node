@@ -1,6 +1,7 @@
 const Event = require('../models/Event')
 
 const eventController = {
+    
     create: async (req, res) => {
         const {
             name,
@@ -15,20 +16,11 @@ const eventController = {
         } = req.body
 
         try {
-<<<<<<< HEAD
-            await new Event(req.body).save()
-
-            res.status(201).json({
-                message: 'event created',
-                success: true
-=======
             let event = await new Event(req.body).save()
-
             res.status(201).json({
                 message: 'event created',
                 success: true,
                 id : event._id
->>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
             })
         } catch (error) {
             res.status(400).json({
@@ -89,6 +81,7 @@ const eventController = {
             })
         }
     },
+
     update: async(req,res) => {
         const {id} = req.params
         try {
@@ -113,6 +106,7 @@ const eventController = {
             })
         }
     },
+
     destroy: async(req,res) => {
         const {id} = req.params
         try {
@@ -137,6 +131,7 @@ const eventController = {
             })
         }
     }
+
 }
 
 module.exports = eventController
