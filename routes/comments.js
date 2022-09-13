@@ -7,7 +7,7 @@ const {
     read,
     update,
     destroy
-} = require('../controllers/userController')
+} = require('../controllers/commentController')
 
 router.get('/', all)
 router.get('/:id', read)
