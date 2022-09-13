@@ -15,20 +15,12 @@ const eventController = {
         } = req.body
 
         try {
-<<<<<<< HEAD
-            await new Event(req.body).save()
-
-            res.status(201).json({
-                message: 'event created',
-                success: true
-=======
             let event = await new Event(req.body).save()
 
             res.status(201).json({
                 message: 'event created',
                 success: true,
                 id : event._id
->>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
             })
         } catch (error) {
             res.status(400).json({
