@@ -1,8 +1,22 @@
 const Event = require('../models/Event')
+const Joi = require('joi')
+
+const validator = Joi.object({
+    "name" : Joi.string(),
+    "image" : Joi.string().uri().message('INVALID_URL'),
+    "price" : Joi.number().integer().min(0).max(100000),
+    "capacity" : Joi.number().integer().min(10).max(50000),
+    "place" : Joi.string(),
+    "category" : Joi.string(),
+    "description" : Joi.string().min(0).max(300),
+    "date" : Joi.date().greater(new Date)
+})
 
 const eventController = {
     create: async (req, res) => {
         try {
+            let result = await validator.validateAsync(req.body)
+
             let event = await new Event(req.body).save()
 
             res.status(201).json({
@@ -11,8 +25,10 @@ const eventController = {
                 id: event._id
             })
         } catch (error) {
+            // console.log(error)
+
             res.status(400).json({
-                message: "could't create event",
+                message: error.message,
                 success: false
             })
         }
