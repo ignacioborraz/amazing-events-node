@@ -5,7 +5,7 @@ const sendMail = require('./sendMail')
 const Joi = require('joi')
 
 const validator = Joi.object({
-    "name" : Joi.string()
+    "name": Joi.string()
         .required()
         .min(3)
         .max(50)
@@ -15,23 +15,25 @@ const validator = Joi.object({
             'string.min': 'NAME_TOO_SHORT',
             'string.max': 'NAME_TOO_LARGE',
         }),
-    "photo" : Joi.string()
+    "photo": Joi.string()
         .required()
         .uri()
         .messages({
             'any.required': 'PHOTO_REQUIRED',
             'string.empty': 'PHOTO_REQUIRED',
-            'string.uri':'INVALID_URL'
+            'string.uri': 'INVALID_URL'
         }),
     "email": Joi.string()
         .required()
-        .email({minDomainSegments:2})    
+        .email({
+            minDomainSegments: 2
+        })
         .messages({
             'any.required': 'EMAIL_REQUIRED',
             'string.empty': 'EMAIL_REQUIRED',
             'string.email': 'INVALID_EMAIL'
         }),
-    "pass" : Joi.string()
+    "pass": Joi.string()
         .required()
         .min(8)
         .max(50)
@@ -43,7 +45,7 @@ const validator = Joi.object({
             'string.max': 'PASS_TOO_LARGE',
             'string.alphanum': 'PASS_ALPHANUMERIC_REQUIRED',
         }),
-    "role" : Joi.any()
+    "role": Joi.any()
         .required()
         .valid('user', 'admin')
         .messages({
@@ -51,7 +53,7 @@ const validator = Joi.object({
             'string.empty': 'ROLE_REQUIRED',
             'any.only': 'ROLE_NOT_ALLOWED'
         }),
-    "from" : Joi.string()
+    "from": Joi.string()
         .required()
         .messages({
             'any.required': 'FROM_REQUIRED',
@@ -93,7 +95,9 @@ const userController = {
             from //el from tiene que venir desde el frontend para avisarle al método desde donde se crea el usuario
         } = req.body
         try {
-            await validator.validateAsync(req.body,{abortEarly:false})
+            await validator.validateAsync(req.body, {
+                abortEarly: false
+            })
 
             let user = await User.findOne({
                 email
@@ -204,19 +208,25 @@ const userController = {
         }
     },
 
-    signIn: async(req, res) => {
-        const {email, password, from} = req.body
+    signIn: async (req, res) => {
+        const {
+            email,
+            pass,
+            from
+        } = req.body
         try {
-            const user = await User.findOne({email})
-            if(!user) { // Si usuario no existe
+            const user = await User.findOne({
+                email
+            })
+            if (!user) { // Si usuario no existe
                 res.status(404).json({
                     success: false,
                     message: "User doesn't exists, please sign up"
                 })
-            } else if(user.verified) { // Si usuario existe y esta verificado
-                const checkPass = user.pass.filter(passwordElement => bcryptjs.compareSync(password, passwordElement))
-                if(from === 'form') { // Si el usuario intenta ingresar por FORM
-                    if(checkPass.length > 0) { // Si contraseña coincide
+            } else if (user.verified) { // Si usuario existe y esta verificado
+                const checkPass = user.pass.filter(password => bcryptjs.compareSync(pass, password))
+                if (from === 'form') { // Si el usuario intenta ingresar por FORM
+                    if (checkPass.length > 0) { // Si contraseña coincide
                         const loginUser = {
                             id: user._id,
                             name: user.name,
@@ -228,7 +238,9 @@ const userController = {
                         await user.save()
                         res.status(200).json({
                             success: true,
-                            response: {user: loginUser},
+                            response: {
+                                user: loginUser
+                            },
                             message: 'Welcome ' + user.name
                         })
                     } else { // Si contraseña no coincide
@@ -238,7 +250,7 @@ const userController = {
                         })
                     }
                 } else { // Si el usuario intenta ingresar por RRSS
-                    if(checkPass.length > 0) { // Si contraseña coincide
+                    if (checkPass.length > 0) { // Si contraseña coincide
                         const loginUser = {
                             id: user._id,
                             name: user.name,
@@ -250,7 +262,9 @@ const userController = {
                         await user.save()
                         res.status(200).json({
                             success: true,
-                            response: {user: loginUser},
+                            response: {
+                                user: loginUser
+                            },
                             message: 'Welcome ' + user.name
                         })
                     } else { // Si contraseña no coincide
@@ -266,7 +280,7 @@ const userController = {
                     message: 'Please, verify your email account and try again'
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             res.status(400).json({
                 success: false,
@@ -286,8 +300,9 @@ const userController = {
                 success: true
             })
         } catch (err) {
-            console.log(err)
-            res.status(500).json()
+            res.status(400).json({
+                message: "error",
+            })
         }
     },
 
@@ -324,7 +339,28 @@ const userController = {
         }
     },
 
-    signOut: async () => {}, //findOneAndUpdate y cambiar logged de true a false
+    signOut: async (req, res) => {
+        const {
+            email
+        } = req.body
+        try {
+            const user = await User.findOne({
+                email
+            })
+            user.logged = false
+            await user.save()
+            res.status(200).json({
+                success: true,
+                message: email + ' sign out!'
+            })
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        }
+    },
 
     destroy: async (req, res) => {
         const {
@@ -348,7 +384,7 @@ const userController = {
                     success: false
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             res.status(400).json({
                 message: "error",
