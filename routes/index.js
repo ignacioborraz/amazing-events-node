@@ -1,18 +1,18 @@
 var express = require('express');
 var router = express.Router();
 
-const eventRouter = require('./events')
 const authRouter = require('./auth')
-const userRouter = require('./users')
-const commentRouter = require('./comments')
+const commentsRouter = require('./comments')
+const eventsRouter = require('./events')
+const usersRouter = require('./users')
 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Amazing Events' });
 });
 
-router.use('/events', eventRouter)
 router.use('/auth',authRouter)
-router.use('/users', userRouter)
-router.use('/comments', commentRouter)
+router.use('/comments', commentsRouter)
+router.use('/events', eventsRouter)
+router.use('/users', usersRouter)
 
 module.exports = router;

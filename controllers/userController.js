@@ -1,34 +1,63 @@
-/* 
-- logica del metodo de registro de usuario (de formulario O red social)
-    - consultar si el mail existe en la base de datos
-    - si el mail no existe => ejemplo ===> from: []
-        - si el usuario se crea con un formulario
-        - si el usuario se crea con redes sociales 
-    - si el mail existe => ejemplo ===> from: ['google']
-        - si el usuario ya tiene cuenta por este medio (existe adentro del array de from) no permito el re-registro
-            ejemplo => el usuario quiere registrarse por google pero ya hizo previamente el registro con google
-            from: ['google'] y NO tengo que agregar google de nuevo, es decir no permito ==> form: ['google','google']
-        - si el usuario no tiene cuenta por este medio (no existe adentro del array de from) permito su registro
-            ejemplo => el usuario quiere registrarse por facebook pero ya hizo previamente el registro con google
-            from: ['google'] y SI tengo que agregar un nuevo "from", es decir ==> form: ['google','facebook']
-
-            from y pass deben ser arrays: por que?
-            from : ['formulario']    ===> pass = 'Hola1234' (hasheado)
-            from : ['formulario','google']   ===> pass = 'chau12345U' (hasheado)
-            si reemplazo la contraseña del formulario por la nueva de google
-            cuando el usuario quiera volver a ingresar con el formulario NO VA A PODER
-            por eso la contraseña tambien tiene que ser un array
-            from : ['formulario']    ===> pass = ['Hola1234'] (hasheado)
-            from : ['formulario','google']   ===> pass = ['Hola1234','chau12345U'] (hasheado)
-            from : ['formulario','google','facebook']   ===> pass = ['Hola1234','chau12345U','igna2022'] (hasheado)
-            from : ['formulario','google','facebook','github']   ===> pass = ['Hola1234','chau12345U','igna2022','mindy2000'] (hasheado)
-            MODIFICO EL MODELO!!!
-*/
-
 const User = require('../models/User')
 const crypto = require('crypto') //recurso propio de nodeJS para generar códigos aleatorios y unicos
 const bcryptjs = require('bcryptjs') //recurso propio de nodeJS para hashear contraseñas
 const sendMail = require('./sendMail')
+const Joi = require('joi')
+
+const validator = Joi.object({
+    "name" : Joi.string()
+        .required()
+        .min(3)
+        .max(50)
+        .messages({
+            'any.required': 'NAME_REQUIRED',
+            'string.empty': 'NAME_REQUIRED',
+            'string.min': 'NAME_TOO_SHORT',
+            'string.max': 'NAME_TOO_LARGE',
+        }),
+    "photo" : Joi.string()
+        .required()
+        .uri()
+        .messages({
+            'any.required': 'PHOTO_REQUIRED',
+            'string.empty': 'PHOTO_REQUIRED',
+            'string.uri':'INVALID_URL'
+        }),
+    "email": Joi.string()
+        .required()
+        .email({minDomainSegments:2})    
+        .messages({
+            'any.required': 'EMAIL_REQUIRED',
+            'string.empty': 'EMAIL_REQUIRED',
+            'string.email': 'INVALID_EMAIL'
+        }),
+    "pass" : Joi.string()
+        .required()
+        .min(8)
+        .max(50)
+        .alphanum()
+        .messages({
+            'any.required': 'PASS_REQUIRED',
+            'string.empty': 'PASS_REQUIRED',
+            'string.min': 'PASS_TOO_SHORT',
+            'string.max': 'PASS_TOO_LARGE',
+            'string.alphanum': 'PASS_ALPHANUMERIC_REQUIRED',
+        }),
+    "role" : Joi.any()
+        .required()
+        .valid('user', 'admin')
+        .messages({
+            'any.required': 'ROLE_REQUIRED',
+            'string.empty': 'ROLE_REQUIRED',
+            'any.only': 'ROLE_NOT_ALLOWED'
+        }),
+    "from" : Joi.string()
+        .required()
+        .messages({
+            'any.required': 'FROM_REQUIRED',
+            'string.empty': 'FROM_REQUIRED'
+        }),
+})
 
 const userController = {
     create: async (req, res) => {
@@ -64,6 +93,8 @@ const userController = {
             from //el from tiene que venir desde el frontend para avisarle al método desde donde se crea el usuario
         } = req.body
         try {
+            await validator.validateAsync(req.body,{abortEarly:false})
+
             let user = await User.findOne({
                 email
             })
@@ -135,7 +166,7 @@ const userController = {
         } catch (error) {
             console.log(error)
             res.status(400).json({
-                message: "could't signed up",
+                message: error.message,
                 success: false
             })
         }
@@ -173,6 +204,78 @@ const userController = {
         }
     },
 
+    signIn: async(req, res) => {
+        const {email, password, from} = req.body
+        try {
+            const user = await User.findOne({email})
+            if(!user) { // Si usuario no existe
+                res.status(404).json({
+                    success: false,
+                    message: "User doesn't exists, please sign up"
+                })
+            } else if(user.verified) { // Si usuario existe y esta verificado
+                const checkPass = user.pass.filter(passwordElement => bcryptjs.compareSync(password, passwordElement))
+                if(from === 'form') { // Si el usuario intenta ingresar por FORM
+                    if(checkPass.length > 0) { // Si contraseña coincide
+                        const loginUser = {
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            photo: user.photo
+                        }
+                        user.logged = true
+                        await user.save()
+                        res.status(200).json({
+                            success: true,
+                            response: {user: loginUser},
+                            message: 'Welcome ' + user.name
+                        })
+                    } else { // Si contraseña no coincide
+                        res.status(400).json({
+                            success: false,
+                            message: 'Username or password incorrect'
+                        })
+                    }
+                } else { // Si el usuario intenta ingresar por RRSS
+                    if(checkPass.length > 0) { // Si contraseña coincide
+                        const loginUser = {
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            photo: user.photo
+                        }
+                        user.logged = true
+                        await user.save()
+                        res.status(200).json({
+                            success: true,
+                            response: {user: loginUser},
+                            message: 'Welcome ' + user.name
+                        })
+                    } else { // Si contraseña no coincide
+                        res.status(400).json({
+                            success: false,
+                            message: 'Invalid credentials'
+                        })
+                    }
+                }
+            } else { // Si usuario existe pero NO esta verificado
+                res.status(401).json({
+                    success: false,
+                    message: 'Please, verify your email account and try again'
+                })
+            }
+        } catch(error) {
+            console.log(error)
+            res.status(400).json({
+                success: false,
+                message: 'Sign In ERROR, try again later'
+            })
+        }
+
+    },
+
     all: async (req, res) => {
         try {
             let users = await User.find()
@@ -185,38 +288,6 @@ const userController = {
         } catch (err) {
             console.log(err)
             res.status(500).json()
-        }
-    },
-
-    read: async (req, res) => {
-        const {
-            id
-        } = req.params
-
-        try {
-            let user = await User.findOne({
-                _id: id
-            })
-
-            if (user) {
-                res.status(200).json({
-                    message: "you get one user",
-                    response: user,
-                    success: true
-                })
-            } else {
-                res.status(404).json({
-                    message: "could't find user",
-                    success: false
-                })
-            }
-        } catch (error) {
-            console.log(error)
-
-            res.status(400).json({
-                message: "error",
-                success: false
-            })
         }
     },
 
@@ -247,13 +318,11 @@ const userController = {
         } catch (error) {
             console.log(error)
             res.status(400).json({
-                message: "could't verify account",
+                message: "error",
                 success: false
             })
         }
     },
-
-    signIn: async () => {},
 
     signOut: async () => {}, //findOneAndUpdate y cambiar logged de true a false
 
@@ -279,7 +348,7 @@ const userController = {
                     success: false
                 })
             }
-        } catch (error) {
+        } catch(error) {
             console.log(error)
             res.status(400).json({
                 message: "error",

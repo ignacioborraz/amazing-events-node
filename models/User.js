@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const schema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     photo: {
         type: String,
@@ -64,6 +64,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     }
+
 })
 
 const User = mongoose.model('users', schema)

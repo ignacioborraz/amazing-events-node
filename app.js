@@ -6,11 +6,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-<<<<<<< HEAD
-const cors = require('cors') // Requiero cors
-=======
 const cors = require('cors')
->>>>>>> 002d1d4887cfcc7c1f6f0646c02604c69811446d
 
 // Servidor
 var indexRouter = require('./routes/index')
