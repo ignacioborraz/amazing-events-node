@@ -150,7 +150,7 @@ const userController = {
     },
 
     signIn: async(req, res) => {
-        const {email, password, from} = req.body
+        const {email, pass, from} = req.body
         try {
             const user = await User.findOne({email})
             if(!user) { // Si usuario no existe
@@ -159,7 +159,7 @@ const userController = {
                     message: "User doesn't exists, please sign up"
                 })
             } else if(user.verified) { // Si usuario existe y esta verificado
-                const checkPass = user.pass.filter(passwordElement => bcryptjs.compareSync(password, passwordElement))
+                const checkPass = user.pass.filter(password => bcryptjs.compareSync(pass, password))
                 if(from === 'form') { // Si el usuario intenta ingresar por FORM
                     if(checkPass.length > 0) { // Si contraseña coincide
                         const loginUser = {
@@ -280,7 +280,26 @@ const userController = {
         }
     },
 
-    signOut: async () => {}, //findOneAndUpdate y cambiar logged de true a false
+    signOut: async (req, res) => {
+        const {
+            email
+        } = req.body
+        try {
+            const user = await User.findOne({email})
+            user.logged = false
+            await user.save()
+            res.status(200).json({
+                success: true,
+                message: email+' sign out!'})
+        } catch(error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        }
+
+    },
 
     destroy: async (req, res) => {
         const {
