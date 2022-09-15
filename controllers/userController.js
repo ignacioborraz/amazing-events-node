@@ -5,7 +5,7 @@ const sendMail = require('./sendMail')
 const Joi = require('joi')
 
 const validator = Joi.object({
-    "name" : Joi.string()
+    "name": Joi.string()
         .required()
         .min(3)
         .max(50)
@@ -15,23 +15,25 @@ const validator = Joi.object({
             'string.min': 'NAME_TOO_SHORT',
             'string.max': 'NAME_TOO_LARGE',
         }),
-    "photo" : Joi.string()
+    "photo": Joi.string()
         .required()
         .uri()
         .messages({
             'any.required': 'PHOTO_REQUIRED',
             'string.empty': 'PHOTO_REQUIRED',
-            'string.uri':'INVALID_URL'
+            'string.uri': 'INVALID_URL'
         }),
     "email": Joi.string()
         .required()
-        .email({minDomainSegments:2})    
+        .email({
+            minDomainSegments: 2
+        })
         .messages({
             'any.required': 'EMAIL_REQUIRED',
             'string.empty': 'EMAIL_REQUIRED',
             'string.email': 'INVALID_EMAIL'
         }),
-    "pass" : Joi.string()
+    "pass": Joi.string()
         .required()
         .min(8)
         .max(50)
@@ -43,7 +45,7 @@ const validator = Joi.object({
             'string.max': 'PASS_TOO_LARGE',
             'string.alphanum': 'PASS_ALPHANUMERIC_REQUIRED',
         }),
-    "role" : Joi.any()
+    "role": Joi.any()
         .required()
         .valid('user', 'admin')
         .messages({
@@ -51,7 +53,7 @@ const validator = Joi.object({
             'string.empty': 'ROLE_REQUIRED',
             'any.only': 'ROLE_NOT_ALLOWED'
         }),
-    "from" : Joi.string()
+    "from": Joi.string()
         .required()
         .messages({
             'any.required': 'FROM_REQUIRED',
@@ -60,6 +62,28 @@ const validator = Joi.object({
 })
 
 const userController = {
+    create: async (req, res) => {
+        const {
+            name,
+            lastName,
+            email,
+            pass,
+            photo
+        } = req.body
+
+        try {
+            await new User(req.body).save()
+
+            res.status(201).json({
+                message: 'user created',
+                success: true
+            })
+        } catch (error) {
+            res.status(400).json({
+                message: "could't create user",
+            })
+        }
+    },
 
     signUp: async (req, res) => {
         let {
@@ -71,7 +95,10 @@ const userController = {
             from //el from tiene que venir desde el frontend para avisarle al método desde donde se crea el usuario
         } = req.body
         try {
-            await validator.validateAsync(req.body,{abortEarly:false})
+            await validator.validateAsync(req.body, {
+                abortEarly: false
+            })
+
             let user = await User.findOne({
                 email
             })
@@ -149,82 +176,16 @@ const userController = {
         }
     },
 
-    signIn: async(req, res) => {
-        const {email, password, from} = req.body
-        try {
-            const user = await User.findOne({email})
-            if(!user) { // Si usuario no existe
-                res.status(404).json({
-                    success: false,
-                    message: "User doesn't exists, please sign up"
-                })
-            } else if(user.verified) { // Si usuario existe y esta verificado
-                const checkPass = user.pass.filter(passwordElement => bcryptjs.compareSync(password, passwordElement))
-                if(from === 'form') { // Si el usuario intenta ingresar por FORM
-                    if(checkPass.length > 0) { // Si contraseña coincide
-                        const loginUser = {
-                            id: user._id,
-                            name: user.name,
-                            email: user.email,
-                            role: user.role,
-                            photo: user.photo
-                        }
-                        user.logged = true
-                        await user.save()
-                        res.status(200).json({
-                            success: true,
-                            response: {user: loginUser},
-                            message: 'Welcome ' + user.name
-                        })
-                    } else { // Si contraseña no coincide
-                        res.status(400).json({
-                            success: false,
-                            message: 'Username or password incorrect'
-                        })
-                    }
-                } else { // Si el usuario intenta ingresar por RRSS
-                    if(checkPass.length > 0) { // Si contraseña coincide
-                        const loginUser = {
-                            id: user._id,
-                            name: user.name,
-                            email: user.email,
-                            role: user.role,
-                            photo: user.photo
-                        }
-                        user.logged = true
-                        await user.save()
-                        res.status(200).json({
-                            success: true,
-                            response: {user: loginUser},
-                            message: 'Welcome ' + user.name
-                        })
-                    } else { // Si contraseña no coincide
-                        res.status(400).json({
-                            success: false,
-                            message: 'Invalid credentials'
-                        })
-                    }
-                }
-            } else { // Si usuario existe pero NO esta verificado
-                res.status(401).json({
-                    success: false,
-                    message: 'Please, verify your email account and try again'
-                })
-            }
-        } catch(error) {
-            console.log(error)
-            res.status(400).json({
-                success: false,
-                message: 'Sign In ERROR, try again later'
-            })
-        }
-
-    },
-
+    //el codigo unico y aleatorio generado en el metodo de signup
+    //se pasa por params a este otro metodo para poder verificar la cuenta
+    //luego de requerirlo lo comparo con los perfiles ya creados (lo busco en la base de datos)
+    //si encuentra el usuario cambio el verified de false a true
+    //si no lo encuentra avisar que el mail a verificar no tiene cuenta
     verifyMail: async (req, res) => {
         const {
             code
         } = req.params
+        //let user = await User.findOne({code:code})
         try {
             let user = await User.findOne({
                 code
@@ -240,6 +201,104 @@ const userController = {
                     message: "email has not account yet",
                 })
             }
+        } catch (err) {
+            res.status(404).json({
+                message: "email has not account yet",
+            })
+        }
+    },
+
+    signIn: async (req, res) => {
+        const {
+            email,
+            pass,
+            from
+        } = req.body
+        try {
+            const user = await User.findOne({
+                email
+            })
+            if (!user) { // Si usuario no existe
+                res.status(404).json({
+                    success: false,
+                    message: "User doesn't exists, please sign up"
+                })
+            } else if (user.verified) { // Si usuario existe y esta verificado
+                const checkPass = user.pass.filter(password => bcryptjs.compareSync(pass, password))
+                if (from === 'form') { // Si el usuario intenta ingresar por FORM
+                    if (checkPass.length > 0) { // Si contraseña coincide
+                        const loginUser = {
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            photo: user.photo
+                        }
+                        user.logged = true
+                        await user.save()
+                        res.status(200).json({
+                            success: true,
+                            response: {
+                                user: loginUser
+                            },
+                            message: 'Welcome ' + user.name
+                        })
+                    } else { // Si contraseña no coincide
+                        res.status(400).json({
+                            success: false,
+                            message: 'Username or password incorrect'
+                        })
+                    }
+                } else { // Si el usuario intenta ingresar por RRSS
+                    if (checkPass.length > 0) { // Si contraseña coincide
+                        const loginUser = {
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            photo: user.photo
+                        }
+                        user.logged = true
+                        await user.save()
+                        res.status(200).json({
+                            success: true,
+                            response: {
+                                user: loginUser
+                            },
+                            message: 'Welcome ' + user.name
+                        })
+                    } else { // Si contraseña no coincide
+                        res.status(400).json({
+                            success: false,
+                            message: 'Invalid credentials'
+                        })
+                    }
+                }
+            } else { // Si usuario existe pero NO esta verificado
+                res.status(401).json({
+                    success: false,
+                    message: 'Please, verify your email account and try again'
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                success: false,
+                message: 'Sign In ERROR, try again later'
+            })
+        }
+
+    },
+
+    all: async (req, res) => {
+        try {
+            let users = await User.find()
+
+            res.status(200).json({
+                message: "you get users",
+                response: users,
+                success: true
+            })
         } catch (err) {
             res.status(400).json({
                 message: "error",
@@ -280,7 +339,28 @@ const userController = {
         }
     },
 
-    signOut: async () => {}, //findOneAndUpdate y cambiar logged de true a false
+    signOut: async (req, res) => {
+        const {
+            email
+        } = req.body
+        try {
+            const user = await User.findOne({
+                email
+            })
+            user.logged = false
+            await user.save()
+            res.status(200).json({
+                success: true,
+                message: email + ' sign out!'
+            })
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        }
+    },
 
     destroy: async (req, res) => {
         const {
@@ -304,7 +384,7 @@ const userController = {
                     success: false
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             res.status(400).json({
                 message: "error",
@@ -312,7 +392,6 @@ const userController = {
             })
         }
     }
-    
 }
 
 module.exports = userController
