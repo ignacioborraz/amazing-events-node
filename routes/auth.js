@@ -3,10 +3,10 @@ var router = express.Router();
 const {
     signUp,
     verifyMail,
-    signIn
+    signIn,
+    signOut
 } = require('../controllers/userController')
 
-/* GET users listing. */
 router.post('/signup', signUp);
 router.post('/signin', signIn);
 router.post('/signout', signOut);
