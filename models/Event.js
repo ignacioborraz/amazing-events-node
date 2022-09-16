@@ -3,19 +3,28 @@ const mongoose = require('mongoose')
 const schema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        min: 4,
+        max: 100
     },
     image: {
         type: String,
-        required: true
+        required: true,
+        validate: function (value) {
+            if (! value.startsWith('http')) {
+                throw new Error('La URL debe comenzar con http')
+            }
+        }
     },
     date: {
         type: Date,
         required: true
+        // la fecha es futura
     },
     description: {
         type: String,
         required: true
+        // maximo 300
     },
     category: {
         type: String,
@@ -28,6 +37,8 @@ const schema = new mongoose.Schema({
     capacity: {
         type: Number,
         required: true
+        // min: 10
+        // max: 50000
     },
     assistance: {
         type: Number
