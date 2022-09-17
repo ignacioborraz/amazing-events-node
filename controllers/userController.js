@@ -3,7 +3,10 @@ const crypto = require('crypto')
 const bcryptjs = require('bcryptjs') 
 const sendMail = require('./sendMail')
 const validator = require('../schemas/comment')
+<<<<<<< HEAD
 const jwt = require('jsonwebtoken')
+=======
+>>>>>>> 02832300f13b6a5e2646f925bea0cbd23ae8b6c2
 
 const userController = {
 
