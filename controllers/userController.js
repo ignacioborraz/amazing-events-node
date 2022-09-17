@@ -3,6 +3,7 @@ const crypto = require('crypto')
 const bcryptjs = require('bcryptjs') 
 const sendMail = require('./sendMail')
 const validator = require('../schemas/comment')
+const jwt = require('jsonwebtoken')
 
 const userController = {
 
@@ -119,8 +120,7 @@ const userController = {
     signIn: async (req, res) => {
         const {
             email,
-            pass,
-            from
+            pass
         } = req.body
         try {
             const user = await User.findOne({
@@ -133,54 +133,30 @@ const userController = {
                 })
             } else if (user.verified) {
                 const checkPass = user.pass.filter(password => bcryptjs.compareSync(pass, password))
-                if (from === 'form') { 
-                    if (checkPass.length > 0) { 
-                        const loginUser = {
-                            id: user._id,
-                            name: user.name,
-                            email: user.email,
-                            role: user.role,
-                            photo: user.photo
-                        }
-                        user.logged = true
-                        await user.save()
-                        res.status(200).json({
-                            success: true,
-                            response: {
-                                user: loginUser
-                            },
-                            message: 'Welcome ' + user.name
-                        })
-                    } else {
-                        res.status(400).json({
-                            success: false,
-                            message: 'Username or password incorrect'
-                        })
+                if (checkPass.length > 0) {
+                    user.logged = true
+                    await user.save()
+                    const data = {
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        photo: user.photo
                     }
+                    const token = jwt.sign({id: user._id}, process.env.KEY_JWT, {expiresIn: 60*60*24})
+                    res.status(200).json({
+                        success: true,
+                        response: {
+                            user: data,
+                            token: token
+                        },
+                        message: 'Welcome ' + user.name+'!'
+                    })
                 } else {
-                    if (checkPass.length > 0) {
-                        const loginUser = {
-                            id: user._id,
-                            name: user.name,
-                            email: user.email,
-                            role: user.role,
-                            photo: user.photo
-                        }
-                        user.logged = true
-                        await user.save()
-                        res.status(200).json({
-                            success: true,
-                            response: {
-                                user: loginUser
-                            },
-                            message: 'Welcome ' + user.name
-                        })
-                    } else {
-                        res.status(400).json({
-                            success: false,
-                            message: 'Invalid credentials'
-                        })
-                    }
+                    res.status(401).json({
+                        success: false,
+                        message: 'Username or password incorrect'
+                    })
                 }
             } else {
                 res.status(401).json({
@@ -192,7 +168,7 @@ const userController = {
             console.log(error)
             res.status(400).json({
                 success: false,
-                message: 'Sign In ERROR, try again later'
+                message: 'Sign in ERROR, try again later'
             })
         }
     },

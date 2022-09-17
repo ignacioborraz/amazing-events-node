@@ -16,7 +16,8 @@ let events = [
         place: "Room A",
         capacity: "50000",
         assistance: "42756",
-        price: 20
+        price: 20,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Salidaalmuseo5.jpg",
         name: "Jurassic Park",
@@ -26,7 +27,8 @@ let events = [
         place: "Field",
         capacity: "100000",
         assistance: "65892",
-        price: 6
+        price: 6,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces1.jpg",
         name: "Halloween Night",
@@ -36,7 +38,8 @@ let events = [
         place: "Room C",
         capacity: "12000",
         estimate: "9815",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica1.jpg",
         name: "Metallica in concert",
@@ -46,7 +49,8 @@ let events = [
         place: "Room A",
         capacity: "150000",
         estimate: "150000",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Maraton3.jpg",
         name: "10K 4 life",
@@ -56,7 +60,8 @@ let events = [
         place: "Football field",
         capacity: "30000",
         assistance: "25698",
-        price: 11
+        price: 11,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Libros7.jpg",
         name: "School's book fair",
@@ -66,7 +71,8 @@ let events = [
         place: "Room D1",
         capacity: "150000",
         estimate: "123286",
-        price: 10
+        price: 10,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Cine7.jpg",
         name: "Avengers",
@@ -76,7 +82,8 @@ let events = [
         place: "Room D1",
         capacity: "9000",
         estimate: "9000",
-        price: 8
+        price: 8,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Cine1.jpg",
         name: "Spiderman",
@@ -86,7 +93,8 @@ let events = [
         place: "Room D1",
         capacity: "9000",
         estimate: "9000",
-        price: 8
+        price: 8,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Cine3.jpg",
         name: "Batman",
@@ -96,7 +104,8 @@ let events = [
         place: "Room D1",
         capacity: "11000",
         assistance: "9300",
-        price: 8
+        price: 8,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Cine4.jpg",
         name: "Fredy",
@@ -106,7 +115,8 @@ let events = [
         place: "Room D2",
         capacity: "11000",
         assistance: "10300",
-        price: 8
+        price: 8,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Feriadecomidas2.jpg",
         name: "Korean style",
@@ -116,7 +126,8 @@ let events = [
         place: "Room A",
         capacity: "45000",
         assistance: "42756",
-        price: 20
+        price: 20,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Feriadecomidas3.jpg",
         name: "Japanese style",
@@ -126,7 +137,8 @@ let events = [
         place: "Room A",
         capacity: "45000",
         assistance: "42756",
-        price: 20
+        price: 20,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Feriadecomidas4.jpg",
         name: "Straight from Middle East",
@@ -136,7 +148,8 @@ let events = [
         place: "Room B",
         capacity: "45000",
         assistance: "43000",
-        price: 20
+        price: 20,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Feriadecomidas5.jpg",
         name: "Take away",
@@ -146,7 +159,8 @@ let events = [
         place: "Room C",
         capacity: "45000",
         assistance: "27000",
-        price: 20
+        price: 20,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Feriadecomidas6.jpg",
         name: "Italian style",
@@ -156,7 +170,8 @@ let events = [
         place: "Room A2",
         capacity: "55000",
         assistance: "48000",
-        price: 20
+        price: 20,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Libros1.jpg",
         name: "Fantasy books",
@@ -166,7 +181,8 @@ let events = [
         place: "Room D4",
         capacity: "150000",
         estimate: "123286",
-        price: 3
+        price: 3,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Libros2.jpg",
         name: "University textbook exchange",
@@ -176,7 +192,8 @@ let events = [
         place: "Room D1",
         capacity: "170000",
         estimate: "143288",
-        price: 10
+        price: 10,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Libros3.jpg",
         name: "Just for your kitchen",
@@ -186,7 +203,8 @@ let events = [
         place: "Room D6",
         capacity: "130000",
         assistance: "90000",
-        price: 10
+        price: 10,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Libros4.jpg",
         name: "BestSeller",
@@ -196,7 +214,8 @@ let events = [
         place: "Room D6",
         capacity: "140000",
         assistance: "110000",
-        price: 10
+        price: 10,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Libros5.jpg",
         name: "Horror and mistery novels",
@@ -206,7 +225,8 @@ let events = [
         place: "Room D1",
         capacity: "14000",
         assistance: "13000",
-        price: 10
+        price: 10,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Libros6.jpg",
         name: "Just Harry",
@@ -216,7 +236,8 @@ let events = [
         place: "Room D6",
         capacity: "140000",
         assistance: "129000",
-        price: 10
+        price: 10,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces2.jpg",
         name: "Comicon",
@@ -226,7 +247,8 @@ let events = [
         place: "Room C",
         capacity: "120000",
         assistance: "110000",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces3.jpg",
         name: "Comicon 2022",
@@ -236,7 +258,8 @@ let events = [
         place: "Room D",
         capacity: "220000",
         estimate: "220000",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces4.jpg",
         name: "Spring Day",
@@ -246,7 +269,8 @@ let events = [
         place: "Room H",
         capacity: "220000",
         estimate: "220000",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces5.jpg",
         name: "Cultures",
@@ -256,7 +280,8 @@ let events = [
         place: "Room G",
         capacity: "220000",
         assistance: "185000",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces6.jpg",
         name: "For the little ones",
@@ -266,7 +291,8 @@ let events = [
         place: "Room G",
         capacity: "10000",
         assistance: "9327",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces7.jpg",
         name: "Epic party",
@@ -276,7 +302,8 @@ let events = [
         place: "Room H",
         capacity: "2000",
         assistance: "1856",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Fiestadedisfraces8.jpg",
         name: "Halloween 2022",
@@ -286,7 +313,8 @@ let events = [
         place: "Room F",
         capacity: "20000",
         estimate: "20000",
-        price: 14
+        price: 14,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Maraton1.jpg",
         name: "15K NY",
@@ -296,7 +324,8 @@ let events = [
         place: "New York",
         capacity: "3000000",
         assistance: "2569800",
-        price: 11
+        price: 11,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Maraton4.jpg",
         name: "Buenos Aires 2022",
@@ -306,7 +335,8 @@ let events = [
         place: "Buenos Aires",
         capacity: "300000",
         estimate: "300000",
-        price: 11
+        price: 11,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Maraton5.jpg",
         name: "New York 2022",
@@ -316,7 +346,8 @@ let events = [
         place: "New York",
         capacity: "5000000",
         estimate: "5000000",
-        price: 11
+        price: 11,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Maraton6.jpg",
         name: "For Life 2nd Edition",
@@ -326,7 +357,8 @@ let events = [
         place: "Cordoba",
         capacity: "200000",
         estimate: "200000",
-        price: 1
+        price: 1,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Maraton7.jpg",
         name: "Cancer Marathon",
@@ -336,7 +368,8 @@ let events = [
         place: "Mar del Plata",
         capacity: "1800000",
         assistance: "1800000",
-        price: 11
+        price: 11,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica2.jpg",
         name: "Electronic Fest",
@@ -346,7 +379,8 @@ let events = [
         place: "Room A",
         capacity: "138000",
         assistance: "110300",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica3.jpg",
         name: "Popular Music",
@@ -356,7 +390,8 @@ let events = [
         place: "Room C",
         capacity: "238000",
         assistance: "183300",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica4.jpg",
         name: "Classics",
@@ -366,7 +401,8 @@ let events = [
         place: "Room B",
         capacity: "38000",
         assistance: "13300",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica5.jpg",
         name: "Opera",
@@ -376,7 +412,8 @@ let events = [
         place: "Room F",
         capacity: "138000",
         estimate: "138000",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica6.jpg",
         name: "Reggaeton 2022",
@@ -386,7 +423,8 @@ let events = [
         place: "Room G",
         capacity: "2138000",
         estimate: "2138000",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica7.jpg",
         name: "Metallica in Buenos Aires",
@@ -396,7 +434,8 @@ let events = [
         place: "Buenos Aires",
         capacity: "138000",
         assistance: "137560",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Conciertodemusica8.jpg",
         name: "San Francisco's Symphony",
@@ -406,7 +445,8 @@ let events = [
         place: "Buenos Aires",
         capacity: "38000",
         assistance: "36560",
-        price: 100
+        price: 100,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Salidaalmuseo1.jpg",
         name: "Parisian Museum",
@@ -416,7 +456,8 @@ let events = [
         place: "Paris",
         capacity: "8200",
         estimate: "8200",
-        price: 6
+        price: 6,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Salidaalmuseo2.jpg",
         name: "Abstract Art",
@@ -426,7 +467,8 @@ let events = [
         place: "Buenos Aires",
         capacity: "1200",
         estimate: "1200",
-        price: 6
+        price: 6,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Salidaalmuseo3.jpg",
         name: "Buenos Aires' Museum 2022",
@@ -436,7 +478,8 @@ let events = [
         place: "Buenos Aires",
         capacity: "800",
         estimate: "800",
-        price: 6
+        price: 6,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Salidaalmuseo4.jpg",
         name: "Buenos Aires' Museum",
@@ -446,7 +489,8 @@ let events = [
         place: "Buenos Aires",
         capacity: "600",
         assistance: "550",
-        price: 6
+        price: 6,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Salidaalmuseo6.jpg",
         name: "Acropolis",
@@ -456,7 +500,8 @@ let events = [
         place: "Athens",
         capacity: "1600",
         assistance: "1540",
-        price: 6
+        price: 6,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Salidaalmuseo7.jpg",
         name: "British Museum",
@@ -466,7 +511,8 @@ let events = [
         place: "England",
         capacity: "1200",
         estimate: "1140",
-        price: 6
+        price: 6,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Cine5.jpg",
         name: "Aladdin",
@@ -476,7 +522,8 @@ let events = [
         place: "Room D2",
         capacity: "10000",
         assistance: "8300",
-        price: 8
+        price: 8,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Cine6.jpg",
         name: "X-men",
@@ -486,7 +533,8 @@ let events = [
         place: "Room D2",
         capacity: "10000",
         estimate: "10000",
-        price: 8
+        price: 8,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Feriadecomidas1.jpg",
         name: "Arabic holidays",
@@ -496,7 +544,8 @@ let events = [
         place: "Room A",
         capacity: "45000",
         assistance: "42756",
-        price: 20
+        price: 20,
+        likes: []
     },{
         image: "https://amazingeventsapi.herokuapp.com/api/img/Maraton2.jpg",
         name: "15K Buenos Aires",
@@ -506,7 +555,8 @@ let events = [
         place: "Buenos Aires",
         capacity: "300000",
         assistance: "256980",
-        price: 11
+        price: 11,
+        likes: []
     }
 ]
 
@@ -521,6 +571,7 @@ events.forEach(event => {
         capacity: event.capacity,
         assistance: event.assistance? event.assistance : null,
         estimated: event.estimate? event.estimate : null,
-        price: event.price
+        price: event.price,
+        likes: []
     })
 })

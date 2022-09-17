@@ -137,6 +137,38 @@ const eventController = {
                 success: false
             })
         }
+    },
+
+    like: async (req,res) => {
+        let {id} = req.params
+        //console.log(req.user)
+        let userId = req.user.id
+        try { 
+            let event = await Event.findOne({_id:id}) 
+            if (event.likes.includes(userId)) {
+                //event.likes.pull(userId)
+                //await event.save()
+                await Event.findOneAndUpdate({_id:id}, {$pull:{likes:userId}}, {new:true})
+                res.status(200).json({
+                    message: "event disliked",
+                    success: true
+                })
+            } else {
+                //event.likes.push(userId)
+                //await event.save()
+                await Event.findOneAndUpdate({_id:id}, {$push:{likes:userId}}, {new:true})
+                res.status(200).json({
+                    message: "event liked",
+                    success: true
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            res.json({
+                message: "error",
+                success: false
+            })
+        } 
     }
 
 }

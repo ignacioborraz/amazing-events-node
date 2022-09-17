@@ -49,6 +49,10 @@ const schema = new mongoose.Schema({
     price: {
         type: Number,
         required: true
+    },
+    likes: {
+        type: Array,
+        required: true
     }
 })
 
