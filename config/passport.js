@@ -24,12 +24,7 @@ passport.use(
                         photo: user.photo
                     }
                     return done(null, user)
-                }
-                else if (err) {
-                    console.log(err)
-                    return done(err, false);
-                }
-                else{
+                } else {
                     return done(null, false)
                 }
             } catch (error) {

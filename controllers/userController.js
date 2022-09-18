@@ -2,7 +2,7 @@ const User = require('../models/User')
 const crypto = require('crypto') 
 const bcryptjs = require('bcryptjs') 
 const sendMail = require('./sendMail')
-const validator = require('../schemas/comment')
+const validator = require('../schemas/user')
 const jwt = require('jsonwebtoken')
 
 const userController = {
@@ -68,7 +68,7 @@ const userController = {
                 }
             } else { 
                 if (user.from.includes(from)) { 
-                    res.status(200).json({ 
+                    res.status(400).json({ 
                         message: "user already exists",
                         success: false 
                     })
@@ -170,6 +170,25 @@ const userController = {
                 success: false,
                 message: 'Sign in ERROR, try again later'
             })
+        }
+    },
+
+    verifyToken:(req, res) => {
+        //console.log(req.user)
+        if (!req.err) {            
+            const token = jwt.sign({id: req.user.id}, process.env.KEY_JWT, {expiresIn: 60*60*24})
+            res.status(200).json({
+                success: true,
+                response: {
+                    user: req.user,
+                    token: token
+                },
+                message: 'Welcome ' + req.user.name+'!'
+            })
+        } else {
+            res.json({
+                success:false,
+                message:"sign in please!"}) 
         }
     },
 

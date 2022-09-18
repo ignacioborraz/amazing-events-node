@@ -1,5 +1,5 @@
 const Event = require('../models/Event')
-const validator = require('../schemas/comment')
+const validator = require('../schemas/event')
 
 const eventController = {
     
