@@ -1,5 +1,5 @@
 const Event = require('../models/Event')
-const validator = require('../schemas/comment')
+const validator = require('../schemas/event')
 
 const eventController = {
     
@@ -137,8 +137,81 @@ const eventController = {
                 success: false
             })
         }
+    },
+
+
+    //logica del controlador
+    //si el usuario quiere likear
+        //agregar id de usuario al array de likes
+    //si el usuario quiere quitar el like
+        //sacar del array el id del usuario
+    
+    like: async (req,res) => {
+        let {id} = req.params
+        //console.log(req.user)
+        let userId = req.user.id
+        try { 
+            let event = await Event.findOne({_id:id}) 
+            if (event.likes.includes(userId)) {
+                event.likes.pull(userId)
+                await event.save()
+                res.status(200).json({
+                    message: "event disliked",
+                    success: true
+                })
+            } else {
+                event.likes.push(userId)
+                await event.save()
+                res.status(200).json({
+                    message: "event liked",
+                    success: true
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        } 
+    },
+
+    likeWithMongoose: async (req,res) => {
+        let {id} = req.params
+        let userId = req.user.id
+        try { 
+            let event = await Event.findOne({_id:id}) 
+            if (event.likes.includes(userId)) {
+                await Event.findOneAndUpdate({_id:id}, {$pull:{likes:userId}}, {new:true})
+                res.status(200).json({
+                    message: "event disliked",
+                    success: true
+                })
+            } else {
+                await Event.findOneAndUpdate({_id:id}, {$push:{likes:userId}}, {new:true})
+                res.status(200).json({
+                    message: "event liked",
+                    success: true
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
+        } 
     }
 
 }
 
 module.exports = eventController
+
+/* 
+
+Métodos de mongoose:
+    $pull quita eleme1ntos de un array
+    $push agrega elementos a un array
+    $set modifica elementos de un array
+
+ */

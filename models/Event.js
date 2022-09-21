@@ -49,7 +49,12 @@ const schema = new mongoose.Schema({
     price: {
         type: Number,
         required: true
-    }
+    },
+    likes: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'users',
+        required: true
+    }]
 })
 
 module.exports = mongoose.model(
