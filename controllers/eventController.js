@@ -35,6 +35,7 @@ const eventController = {
 
         try {
             events = await Event.find(query)
+                .sort({date:'desc'})
 
             res.json(events)
         } catch (err) {
