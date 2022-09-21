@@ -14,7 +14,6 @@ passport.use(
             //console.log(jwt_payload)
             try {
                 let user = await User.findOne({_id:jwt_payload.id})
-                //console.log(user)
                 if (user) {
                     user = {
                         id: user._id,

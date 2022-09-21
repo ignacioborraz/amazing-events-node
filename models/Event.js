@@ -50,10 +50,11 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    likes: {
-        type: Array,
+    likes: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'users',
         required: true
-    }
+    }]
 })
 
 module.exports = mongoose.model(

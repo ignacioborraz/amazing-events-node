@@ -143,7 +143,12 @@ const userController = {
                         role: user.role,
                         photo: user.photo
                     }
-                    const token = jwt.sign({id: user._id}, process.env.KEY_JWT, {expiresIn: 60*60*24})
+                    const token = jwt.sign(
+                        {id: user._id,
+                        role: user.role}, //la data que quiero codificar
+                        process.env.KEY_JWT, //la clave de validacion
+                        {expiresIn: 60*60*24} //el tiempo de expiracion en segundos
+                    )
                     res.status(200).json({
                         success: true,
                         response: {
@@ -173,15 +178,12 @@ const userController = {
         }
     },
 
-    verifyToken:(req, res) => {
-        //console.log(req.user)
-        if (!req.err) {            
-            const token = jwt.sign({id: req.user.id}, process.env.KEY_JWT, {expiresIn: 60*60*24})
+    signInToken:(req, res) => {
+        if (req.user!==null) {            
             res.status(200).json({
                 success: true,
                 response: {
-                    user: req.user,
-                    token: token
+                    user: req.user
                 },
                 message: 'Welcome ' + req.user.name+'!'
             })
