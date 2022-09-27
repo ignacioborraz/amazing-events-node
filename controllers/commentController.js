@@ -92,11 +92,18 @@ const commentController = {
         try {
             let com = await Comment.findOne({_id:id})
             if (com) {
-                await Comment.findOneAndUpdate({_id:id},{comment,date},{new: true})
-                res.status(200).json({
-                    message: "comment updated",
-                    success: true
-                })
+                if (String(com.user) === String(user.id)) {
+                    await Comment.findOneAndUpdate({_id:id},{comment,date},{new: true})
+                    res.status(200).json({
+                        message: "comment updated",
+                        success: true
+                    })
+                } else {
+                    res.status(400).json({
+                        message: "unathorized",
+                        success: false
+                    })
+                }                
             } else {
                 res.status(404).json({
                     message: "could't find comment",
@@ -118,11 +125,18 @@ const commentController = {
         try {
             let comment = await Comment.findOne({_id:id})
             if (comment) {
-                await Comment.findOneAndDelete({_id:id})
-                res.status(200).json({
-                    message: "comment deleted",
-                    success: true
-                })
+                if (String(com.user) === String(user.id)) {
+                    await Comment.findOneAndDelete({_id:id})
+                    res.status(200).json({
+                        message: "comment deleted",
+                        success: true
+                    })
+                } else {
+                    res.status(400).json({
+                        message: "unathorized",
+                        success: false
+                    })
+                }
             } else {
                 res.status(404).json({
                     message: "could't find comment",
