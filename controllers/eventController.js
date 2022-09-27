@@ -4,18 +4,25 @@ const validator = require('../schemas/event')
 const eventController = {
     
     create: async (req, res) => {
-        try {
-            await validator.validateAsync(req.body,{abortEarly:false})
-            let event = await new Event(req.body).save()
-            res.status(201).json({
-                message: 'event created',
-                success: true,
-                id: event._id
-            })
-        } catch (error) {
-            console.log(error)
+        if (req.user.role === 'admin') {
+            try {
+                await validator.validateAsync(req.body,{abortEarly:false})
+                let event = await new Event(req.body).save()
+                res.status(201).json({
+                    message: 'event created',
+                    success: true,
+                    id: event._id
+                })
+            } catch (error) {
+                console.log(error)
+                res.status(400).json({
+                    message: error.message,
+                    success: false
+                })
+            }
+        } else {
             res.status(400).json({
-                message: error.message,
+                message: "unathorized",
                 success: false
             })
         }
@@ -80,30 +87,37 @@ const eventController = {
         const {
             id
         } = req.params
-        try {
-            let event = await Event.findOne({
-                _id: id
-            })
-            if (event) {
-                await Event.findOneAndUpdate({
+        if (req.user.role === 'admin') {
+            try {
+                let event = await Event.findOne({
                     _id: id
-                }, req.body, {
-                    new: true
                 })
-                res.status(200).json({
-                    message: "event updated",
-                    success: true
-                })
-            } else {
-                res.status(404).json({
-                    message: "could't find event",
+                if (event) {
+                    await Event.findOneAndUpdate({
+                        _id: id
+                    }, req.body, {
+                        new: true
+                    })
+                    res.status(200).json({
+                        message: "event updated",
+                        success: true
+                    })
+                } else {
+                    res.status(404).json({
+                        message: "could't find event",
+                        success: false
+                    })
+                }
+            } catch (error) {
+                console.log(error)
+                res.status(400).json({
+                    message: "error",
                     success: false
                 })
-            }
-        } catch (error) {
-            console.log(error)
+            }        
+        } else {
             res.status(400).json({
-                message: "error",
+                message: "unathorized",
                 success: false
             })
         }
@@ -113,43 +127,42 @@ const eventController = {
         const {
             id
         } = req.params
-        try {
-            let event = await Event.findOne({
-                _id: id
-            })
-            if (event) {
-                await Event.findOneAndDelete({
+        if (req.user.role === 'admin') {
+            try {
+                let event = await Event.findOne({
                     _id: id
                 })
-                res.status(200).json({
-                    message: "event deleted",
-                    success: true
-                })
-            } else {
-                res.status(404).json({
-                    message: "could't find event",
+                if (event) {
+                    await Event.findOneAndDelete({
+                        _id: id
+                    })
+                    res.status(200).json({
+                        message: "event deleted",
+                        success: true
+                    })
+                } else {
+                    res.status(404).json({
+                        message: "could't find event",
+                        success: false
+                    })
+                }
+            } catch (error) {
+                console.log(error)
+                res.status(400).json({
+                    message: "error",
                     success: false
                 })
             }
-        } catch (error) {
-            console.log(error)
+        } else {
             res.status(400).json({
-                message: "error",
+                message: "unathorized",
                 success: false
             })
         }
     },
-
-
-    //logica del controlador
-    //si el usuario quiere likear
-        //agregar id de usuario al array de likes
-    //si el usuario quiere quitar el like
-        //sacar del array el id del usuario
     
     like: async (req,res) => {
-        let {id} = req.params
-        //console.log(req.user)
+        let { id } = req.params
         let userId = req.user.id
         try { 
             let event = await Event.findOne({_id:id}) 
@@ -178,7 +191,7 @@ const eventController = {
     },
 
     likeWithMongoose: async (req,res) => {
-        let {id} = req.params
+        let { id } = req.params
         let userId = req.user.id
         try { 
             let event = await Event.findOne({_id:id}) 
@@ -208,11 +221,9 @@ const eventController = {
 
 module.exports = eventController
 
-/* 
-
+/*
 Métodos de mongoose:
     $pull quita eleme1ntos de un array
     $push agrega elementos a un array
     $set modifica elementos de un array
-
- */
+*/
