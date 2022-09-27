@@ -3,15 +3,15 @@ const Comment = require('../models/Comment')
 const commentController = {
 
     create: async (req, res) => {
+        let user = req.user.id
+        let date = new Date()
         const {
             comment,
-            user,
-            event,
-            date
+            event
         } = req.body
 
         try {
-            await new Comment(req.body).save()
+            await new Comment({comment,user,event,date}).save()
 
             res.status(201).json({
                 message: 'comment created',
@@ -26,12 +26,6 @@ const commentController = {
     },
 
     all: async (req, res) => {
-        //deben tener TODAS las querys que piden las tareas correspondientes
-        //va a ingresar una query llamada user que va a ser igual al id del usuario
-        //      ?user=id123131     => esto lo escribo en el endpoint/ruta
-        //      req.query.user = id123131
-        //      ?usuario=id1234
-        //      req.query.usuario = id1234
         let query = {}
 
         if (req.query.user) {
@@ -45,8 +39,6 @@ const commentController = {
             let comments = await Comment.find(query)
                 .populate('event',{name:1,image:1})
                 .populate('user',{name:1,photo:1})
-                //por defecto el 1 está para todos los campos del modelo evento (1 => true => mostrar dato)
-                //si yo lo especifico, se cambian TODOS (0 => false => no mostrar) y solo muestra los que especifico
 
             res.status(200).json({
                 message: "you get comments",
@@ -90,15 +82,28 @@ const commentController = {
     },
 
     update: async(req,res) => {
+        let user = req.user
+        let date = new Date()
         const {id} = req.params
+        const {
+            comment
+        } = req.body
+
         try {
-            let comment = await Comment.findOne({_id:id})
-            if (comment) {
-                await Comment.findOneAndUpdate({_id:id},req.body,{new: true})
-                res.status(200).json({
-                    message: "comment updated",
-                    success: true
-                })
+            let com = await Comment.findOne({_id:id})
+            if (com) {
+                if (String(com.user) === String(user.id)) {
+                    await Comment.findOneAndUpdate({_id:id},{comment,date},{new: true})
+                    res.status(200).json({
+                        message: "comment updated",
+                        success: true
+                    })
+                } else {
+                    res.status(400).json({
+                        message: "unathorized",
+                        success: false
+                    })
+                }                
             } else {
                 res.status(404).json({
                     message: "could't find comment",
@@ -115,15 +120,23 @@ const commentController = {
     },
     
     destroy: async(req,res) => {
+        let user = req.user
         const {id} = req.params
         try {
             let comment = await Comment.findOne({_id:id})
             if (comment) {
-                await Comment.findOneAndDelete({_id:id})
-                res.status(200).json({
-                    message: "comment deleted",
-                    success: true
-                })
+                if (String(com.user) === String(user.id)) {
+                    await Comment.findOneAndDelete({_id:id})
+                    res.status(200).json({
+                        message: "comment deleted",
+                        success: true
+                    })
+                } else {
+                    res.status(400).json({
+                        message: "unathorized",
+                        success: false
+                    })
+                }
             } else {
                 res.status(404).json({
                     message: "could't find comment",

@@ -89,6 +89,10 @@ const validator = Joi.object({
             'any.required': 'DATE_REQUIRED',
             'string.empty': 'DATE_REQUIRED',
             'date.greater': 'INVALID_DATE'
+        }),
+    "likes" : Joi.required()
+        .messages({
+            'any.required': 'LIKES_REQUIRED',
         })
 })
 
