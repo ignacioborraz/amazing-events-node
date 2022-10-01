@@ -14,6 +14,6 @@ router.post('/signup', signUp);
 router.get('/verify/:code', verifyMail);
 router.post('/signin', signIn);
 router.get('/token', passport.authenticate('jwt', {session:false}), signInToken);
-router.post('/signout', signOut);
+router.post('/signout', passport.authenticate('jwt', {session:false}), signOut);
 
 module.exports = router;

@@ -197,7 +197,7 @@ const userController = {
     signOut: async (req, res) => {
         const {
             email
-        } = req.body
+        } = req.user
         try {
             const user = await User.findOne({
                 email
