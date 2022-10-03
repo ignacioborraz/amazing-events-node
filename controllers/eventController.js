@@ -57,7 +57,6 @@ const eventController = {
         if (req.query.limit) {
             paginator.limit = req.query.limit
         }
-        console.log(req.query)
 
         try {
             events = await Event.paginate(query,{ ...paginator, sort: {date: req.query.order}})
