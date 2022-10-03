@@ -31,7 +31,12 @@ const eventController = {
     all: async (req, res) => {
         let events
         let order = 'desc'
+        let paginator = {
+            page: 1,
+            limit: 12
+        }
         let query = {}
+
 
         if (req.query.category) {
             query.category = new RegExp(req.query.category, 'i')
@@ -44,9 +49,18 @@ const eventController = {
         if (req.query.order) {
             order = req.query.order
         }
-        console.log(query)
+
+        if (req.query.page) {
+            paginator.page = req.query.page
+        }
+
+        if (req.query.limit) {
+            paginator.limit = req.query.limit
+        }
+        console.log(req.query)
+
         try {
-            events = await Event.paginate(query,{ page: req.query.page, limit: req.query.limit, sort: {date: req.query.order}})
+            events = await Event.paginate(query,{ ...paginator, sort: {date: req.query.order}})
                 //.sort({date:order})
 
             res.json(events)
