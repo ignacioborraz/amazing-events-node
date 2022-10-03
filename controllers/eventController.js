@@ -30,19 +30,24 @@ const eventController = {
 
     all: async (req, res) => {
         let events
+        let order = 'desc'
         let query = {}
 
-        if (req.query.capacity) {
-            query.capacity = req.query.capacity
+        if (req.query.category) {
+            query.category = new RegExp(req.query.category, 'i')
         }
 
         if (req.query.name) {
-            query.name = req.query.name
+            query.name = new RegExp(req.query.name, 'i')
         }
 
+        if (req.query.order) {
+            order = req.query.order
+        }
+        console.log(query)
         try {
-            events = await Event.find(query)
-                .sort({date:'desc'})
+            events = await Event.paginate(query,{ page: req.query.page, limit: req.query.limit, sort: {date: req.query.order}})
+                //.sort({date:order})
 
             res.json(events)
         } catch (err) {
