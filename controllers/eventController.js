@@ -61,9 +61,8 @@ const eventController = {
 
         try {
             events = await Event.paginate(query,{ ...paginator, sort: {date: req.query.order}})
-                //.sort({date:order})
 
-            res.json(events)
+            res.json(events.docs)
         } catch (err) {
             console.log(err)
             res.status(500).json()
