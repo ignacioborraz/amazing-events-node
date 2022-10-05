@@ -85,7 +85,7 @@ const eventController = {
         try {
             let event = await Event.findOne({
                 _id: id
-            })
+            }).populate('category',{ name:1 })
 
             if (event) {
                 res.status(200).json({
