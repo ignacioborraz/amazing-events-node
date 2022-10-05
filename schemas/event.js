@@ -42,18 +42,6 @@ const validator = Joi.object({
             'number.min': 'CAP_TOO_SMALL',
             'number.max': 'CAP_TOO_MUCH',
         }),
-    "estimated" : Joi.number()
-        .required()    
-        .integer()
-        .min(10)
-        .max(2000000)
-        .messages({
-            'number.base': 'INVALID_EST',
-            'any.required': 'EST_REQUIRED',
-            'number.empty': 'EST_REQUIRED',
-            'number.min': 'EST_TOO_SMALL',
-            'number.max': 'EST_TOO_MUCH',
-        }),
     "place" : Joi.string()
         .required()
         .min(3)
@@ -65,13 +53,7 @@ const validator = Joi.object({
             'string.max': 'PLACE_TOO_LARGE',
         }),
     "category" : Joi.any()
-        .required()
-        .valid('Food Fair','Museum','Costume Party','Music Concert','Race','Book Exchange','Cinema')
-        .messages({
-            'any.required': 'CATEGORY_REQUIRED',
-            'string.empty': 'CATEGORY_REQUIRED',
-            'any.only': 'CATEGORY_NOT_ALLOWED'
-        }),
+        .required(),
     "description" : Joi.string()
         .required()
         .min(3)
@@ -90,10 +72,10 @@ const validator = Joi.object({
             'string.empty': 'DATE_REQUIRED',
             'date.greater': 'INVALID_DATE'
         }),
-    "likes" : Joi.required()
+    "permition" : Joi.required()
         .messages({
-            'any.required': 'LIKES_REQUIRED',
-        })
+            'any.required': 'PERM_REQUIRED',
+        }),
 })
 
 module.exports = validator

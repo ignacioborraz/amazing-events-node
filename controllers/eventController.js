@@ -5,6 +5,7 @@ const eventController = {
     
     create: async (req, res) => {
         if (req.user.role === 'admin') {
+            req.body.permition = false
             try {
                 await validator.validateAsync(req.body,{abortEarly:false})
                 let event = await new Event(req.body).save()
@@ -59,19 +60,20 @@ const eventController = {
         }
 
         try {
-            events = await Event.paginate(query,{ ...paginator, sort: {date: req.query.order}})           
-
-            res.json(events.docs)
-            /* 
+            //events = await Event.paginate(query,{ ...paginator, sort: {date: req.query.order}})
+            //res.json(events.docs)
             events = await Event.find(query)
                 .skip( paginator.page > 0 ? ( ( paginator.page - 1 ) * paginator.limit ) : 0 )
                 .limit( paginator.limit )
                 .sort({date: req.query.order})
+                .populate('category',{ name:1 })
             res.json(events)
-            */
         } catch (err) {
             console.log(err)
-            res.status(500).json()
+            res.status(400).json({
+                message: "error",
+                success: false
+            })
         }
     },
 
@@ -183,71 +185,8 @@ const eventController = {
                 success: false
             })
         }
-    },
-    
-    like: async (req,res) => {
-        let { id } = req.params
-        let userId = req.user.id
-        try { 
-            let event = await Event.findOne({_id:id}) 
-            if (event.likes.includes(userId)) {
-                event.likes.pull(userId)
-                await event.save()
-                res.status(200).json({
-                    message: "event disliked",
-                    success: true
-                })
-            } else {
-                event.likes.push(userId)
-                await event.save()
-                res.status(200).json({
-                    message: "event liked",
-                    success: true
-                })
-            }
-        } catch (error) {
-            console.log(error)
-            res.status(400).json({
-                message: "error",
-                success: false
-            })
-        } 
-    },
-
-    likeWithMongoose: async (req,res) => {
-        let { id } = req.params
-        let userId = req.user.id
-        try { 
-            let event = await Event.findOne({_id:id}) 
-            if (event.likes.includes(userId)) {
-                await Event.findOneAndUpdate({_id:id}, {$pull:{likes:userId}}, {new:true})
-                res.status(200).json({
-                    message: "event disliked",
-                    success: true
-                })
-            } else {
-                await Event.findOneAndUpdate({_id:id}, {$push:{likes:userId}}, {new:true})
-                res.status(200).json({
-                    message: "event liked",
-                    success: true
-                })
-            }
-        } catch (error) {
-            console.log(error)
-            res.status(400).json({
-                message: "error",
-                success: false
-            })
-        } 
     }
 
 }
 
 module.exports = eventController
-
-/*
-Métodos de mongoose:
-    $pull quita eleme1ntos de un array
-    $push agrega elementos a un array
-    $set modifica elementos de un array
-*/
