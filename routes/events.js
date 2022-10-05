@@ -7,8 +7,7 @@ const {
     create,
     read,
     update,
-    destroy,
-    like
+    destroy
 } = require('../controllers/eventController')
 
 router.get('/', all)
@@ -16,6 +15,5 @@ router.get('/:id', read)
 router.post('/', passport.authenticate('jwt', {session:false}), create)
 router.patch('/:id', passport.authenticate('jwt', {session:false}), update)
 router.delete('/:id', passport.authenticate('jwt', {session:false}), destroy)
-router.patch('/like/:id', passport.authenticate('jwt', {session:false}), like)
 
 module.exports = router
