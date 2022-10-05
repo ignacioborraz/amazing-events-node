@@ -40,7 +40,11 @@ const controller = {
         }
         try {
             let likes = await Like.find(query)
-            res.json({ likes: likes.length })
+            if (likes) {
+                res.json({ likes: likes.length })    
+            } else {
+                res.json({ likes: 0 })
+            }
         } catch (err) {
             console.log(err)
             res.status(400).json({
