@@ -11,6 +11,10 @@ function serverError(err, res) {
     return res.status(500).end()
 }
 
+function comesFromRegistration(from) {
+    return from === 'form'
+}
+
 const authController = {
     signUp: async (req, res) => {
         /**
@@ -63,11 +67,11 @@ const authController = {
 
             const code = randomBytes(15).toString('hex')
 
-            if (from === 'form') {
+            if (comesFromRegistration(from)) {
                 await accountVerificationEmail(email, code)
             }
 
-            await new User({
+            await User.create({
                 name,
                 photo,
                 email,
@@ -77,7 +81,7 @@ const authController = {
                 logged: false,
                 verified: true,
                 code
-            }).save()
+            })
 
             return res.status(201).json({
                 message: "user signed up from " + from,
