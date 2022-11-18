@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    
+
     email: {
         type: String,
         required: true
@@ -20,33 +20,41 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     }],
-    
+
     role: {
         type: String,
         required: true
     },
-    
+
     from: [{
         type: String,
         required: true
     }],
-    
+
     logged: {
         type: Boolean,
         required: true
     },
-    
+
     verified: {
         type: Boolean,
         required: true
     },
-    
+
     code: {
         type: String,
         required: true
-    }
+    },
 })
 
-const User = mongoose.model('users', schema)
+const options = {
+    statics: {
+        findByEmail(email) {
+            return this.find({email});
+        }
+    }
+}
+
+const User = mongoose.model('users', schema, options)
 
 module.exports = User

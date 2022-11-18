@@ -2,7 +2,7 @@ const User = require('../models/User')
 const {randomBytes} = require('crypto')
 const {hashSync, compareSync} = require('bcryptjs')
 const {accountVerificationEmail} = require('./accountVerificationEmail')
-const validator = require('../schemas/user')
+const {validator : userValidator } = require('../schemas/user')
 const jwt = require('jsonwebtoken')
 const AFTER_VERIFICATION_URL = 'https://amazing-e.herokuapp.com/'
 
@@ -13,6 +13,23 @@ function serverError(err, res) {
 
 function comesFromRegistration(from) {
     return from === 'form'
+}
+
+async function signUpVerifiedUser(user, req, res) {
+    if (user.from.includes(req.from)) {
+        return res.status(400).json({
+            message: "user already exists", success: false
+        })
+    }
+
+    await user.update({
+        verified: true,
+        $addToSet: {from, pass}
+    })
+
+    return res.status(201).json({
+        message: "user signed up from " + from, success: true
+    })
 }
 
 const authController = {
@@ -29,16 +46,14 @@ const authController = {
              * First, we need check that user info is valid
              * If not, request will be finished without going into the next step
              */
-            await validator.validateAsync(req.body, {
+            await userValidator.validateAsync(req.body, {
                 abortEarly: false
             })
 
             /**
              * Try to find the user by the email from request
              */
-            let user = await User.findOne({
-                email
-            })
+            let user = await User.findByEmail(email)
 
             /**
              * Hash the password from request
@@ -49,20 +64,7 @@ const authController = {
              * If user exists is because has been registered before
              */
             if (user) {
-                if (user.from.includes(from)) {
-                    return res.status(400).json({
-                        message: "user already exists", success: false
-                    })
-                }
-
-                await user.update({
-                    verified: true,
-                    $addToSet: {from, pass}
-                })
-
-                return res.status(201).json({
-                    message: "user signed up from " + from, success: true
-                })
+                return await signUpVerifiedUser(user, res)
             }
 
             const code = randomBytes(15).toString('hex')

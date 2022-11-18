@@ -5,9 +5,7 @@ async function accountExists(req, res, next) {
         return next()
     }
 
-    const user = await User.findOne({
-        email: req.body.email
-    })
+    const user = await User.findByEmail(req.body.email)
 
     if (user) {
         req.user = user
