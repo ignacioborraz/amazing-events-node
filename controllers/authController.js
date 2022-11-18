@@ -2,9 +2,13 @@ const User = require('../models/User')
 const {randomBytes} = require('crypto')
 const {hashSync, compareSync} = require('bcryptjs')
 const {accountVerificationEmail} = require('./accountVerificationEmail')
-const {validator : userValidator } = require('../schemas/user')
+const {validator: userValidator} = require('../schemas/user')
 const jwt = require('jsonwebtoken')
 const AFTER_VERIFICATION_URL = 'https://amazing-e.herokuapp.com/'
+const {
+    userSignedUpResponse, userExistsResponse, userNotFoundResponse, userSignedOutResponse,
+    mustSignInResponse, invalidCredentialsResponse,
+} = require('../responses/auth')
 
 function serverError(err, res) {
     console.error(err)
@@ -15,11 +19,11 @@ function comesFromRegistration(from) {
     return from === 'form'
 }
 
-async function signUpVerifiedUser(user, req, res) {
-    if (user.from.includes(req.from)) {
-        return res.status(400).json({
-            message: "user already exists", success: false
-        })
+async function signUpVerifiedUser(user, req) {
+    let {from, pass} = req
+
+    if (user.from.includes(from)) {
+        return userExistsResponse()
     }
 
     await user.update({
@@ -27,9 +31,7 @@ async function signUpVerifiedUser(user, req, res) {
         $addToSet: {from, pass}
     })
 
-    return res.status(201).json({
-        message: "user signed up from " + from, success: true
-    })
+    return userSignedUpResponse()
 }
 
 const authController = {
@@ -85,10 +87,7 @@ const authController = {
                 code
             })
 
-            return res.status(201).json({
-                message: "user signed up from " + from,
-                success: true
-            })
+            return userSignedUpResponse()
         } catch (error) {
             serverError(error, res)
         }
@@ -106,9 +105,7 @@ const authController = {
                 return res.redirect(AFTER_VERIFICATION_URL)
             }
 
-            return res.status(404).json({
-                message: "user not found",
-            })
+            return userNotFoundResponse()
         } catch (error) {
             serverError(error, res)
         }
@@ -127,14 +124,6 @@ const authController = {
             if (checkPass.length > 0) {
                 await user.update({logged: true}).exec()
 
-                const data = {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                    photo: user.photo
-                }
-
                 const token = jwt.sign({
                         id: user._id,
                         role: user.role
@@ -144,49 +133,44 @@ const authController = {
                 )
 
                 return res.status(200).json({
-                    success: true, response: {
-                        user: data, token: token
-                    }, message: 'Welcome ' + user.name + '!'
+                    success: true,
+                    message: 'Welcome ' + user.name + '!',
+                    response: {
+                        token,
+                        user: {
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            photo: user.photo
+                        },
+                    },
                 })
             }
 
-            return res.status(401).json({
-                success: false, message: 'Username or password incorrect'
-            })
+            return invalidCredentialsResponse()
         } catch (error) {
             serverError(error, res)
         }
     },
 
     signInWithToken: (req, res) => {
-        if (req.user) {
-            return res.json({
-                success: true,
-                response: {
-                    user: req.user
-                },
-                message: `Welcome ${req.user.name}`
-            })
-        }
+        let {user} = req
 
-        return res.status(400).json({
-            success: false,
-            message: "sign in please!"
+        return res.json({
+            success: true,
+            response: {user},
+            message: `Welcome ${user.name}`
         })
     },
 
     signOut: async (req, res) => {
-        const {
-            email
-        } = req.user
+        const {email} = req.user
 
         try {
             await User.findOneAndUpdate({email}, {logged: false})
 
-            res.json({
-                success: true,
-                message: 'signed out'
-            })
+            return userSignedOutResponse()
         } catch (error) {
             serverError(error, res)
         }

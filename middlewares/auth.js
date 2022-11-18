@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const {mustSignInResponse} = require("../responses/auth");
 
 async function accountExists(req, res, next) {
     if (req.user) {
@@ -29,7 +30,16 @@ function accountHasBeenVerified(req, res, next) {
     })
 }
 
+function mustSignIn(req, res, next) {
+    if (req.user) {
+        return next()
+    }
+
+    return mustSignInResponse()
+}
+
 module.exports = {
     accountExists,
-    accountHasBeenVerified
+    accountHasBeenVerified,
+    mustSignIn,
 }
