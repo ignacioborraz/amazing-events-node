@@ -34,14 +34,40 @@ async function signUpVerifiedUser(user, req) {
     return userSignedUpResponse()
 }
 
+async function signUpNewUser(req) {
+    let {
+        name, photo, email, pass, role, from
+    } = req.body
+
+    pass = hashSync(pass, 10)
+
+    const code = randomBytes(15).toString('hex')
+
+    if (comesFromRegistration(from)) {
+        await accountVerificationEmail(email, code)
+    }
+
+    await User.create({
+        name,
+        photo,
+        email,
+        pass: [pass],
+        role,
+        from: [from],
+        logged: false,
+        verified: true,
+        code
+    })
+
+    return userSignedUpResponse()
+}
+
 const authController = {
     signUp: async (req, res) => {
         /**
-         * Get the user info from post request
+         * Get the user email from post request
          */
-        let {
-            name, photo, email, pass, role, from
-        } = req.body
+        let {email} = req.body
 
         try {
             /**
@@ -58,36 +84,10 @@ const authController = {
             let user = await User.findByEmail(email)
 
             /**
-             * If user exists is because has been registered before
+             * If user exists is because has been registered before, just sign in
+             * Otherwise creates new user first and then sign up
              */
-            if (user) {
-                return await signUpVerifiedUser(user, res)
-            }
-
-            /**
-             * Hash the password from request
-             */
-            pass = hashSync(pass, 10)
-
-            const code = randomBytes(15).toString('hex')
-
-            if (comesFromRegistration(from)) {
-                await accountVerificationEmail(email, code)
-            }
-
-            await User.create({
-                name,
-                photo,
-                email,
-                pass: [pass],
-                role,
-                from: [from],
-                logged: false,
-                verified: true,
-                code
-            })
-
-            return userSignedUpResponse()
+            return (user ? await signUpVerifiedUser(user, res) : await signUpNewUser(req))
         } catch (error) {
             serverError(error, res)
         }
