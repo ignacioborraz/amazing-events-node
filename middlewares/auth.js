@@ -1,11 +1,16 @@
 const User = require("../models/User");
 
 async function accountExists(req, res, next) {
+    if (req.user) {
+        return next()
+    }
+
     const user = await User.findOne({
         email: req.body.email
     })
 
     if (user) {
+        req.user = user
         return next()
     }
 
