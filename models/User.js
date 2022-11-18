@@ -45,16 +45,14 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
-})
-
-const options = {
+}, {
     statics: {
         findByEmail(email) {
             return this.find({email});
         }
     }
-}
+})
 
-const User = mongoose.model('users', schema, options)
+const User = mongoose.model('users', schema)
 
 module.exports = User
