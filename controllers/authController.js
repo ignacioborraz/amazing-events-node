@@ -58,16 +58,16 @@ const authController = {
             let user = await User.findByEmail(email)
 
             /**
-             * Hash the password from request
-             */
-            pass = hashSync(pass, 10)
-
-            /**
              * If user exists is because has been registered before
              */
             if (user) {
                 return await signUpVerifiedUser(user, res)
             }
+
+            /**
+             * Hash the password from request
+             */
+            pass = hashSync(pass, 10)
 
             const code = randomBytes(15).toString('hex')
 
