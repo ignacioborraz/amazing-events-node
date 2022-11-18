@@ -55,10 +55,10 @@ const authController = {
                     })
                 }
 
-                user.from.push(from)
-                user.verified = true
-                user.pass.push(pass)
-                await user.save()
+                await user.update({
+                    verified: true,
+                    $addToSet: {from, pass}
+                })
 
                 return res.status(201).json({
                     message: "user signed up from " + from, success: true
