@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
+const {Schema, Types, model} = require('mongoose')
 //const mongoosePaginate = require('mongoose-paginate-v2')
 
-const schema = new mongoose.Schema({
+const schema = new Schema({
     name: {
         type: String,
         required: true,
@@ -28,7 +28,7 @@ const schema = new mongoose.Schema({
         // maximo 300
     },
     category: {
-        type: mongoose.Types.ObjectId,
+        type: Types.ObjectId,
         ref: 'categories',
         required: true
     },
@@ -43,20 +43,23 @@ const schema = new mongoose.Schema({
         // max: 50000
     },
     assistance: {
-        type: Number
+        type: Number,
+        required: false,
+        default: null,
     },
     price: {
         type: Number,
-        required: true
+        required: true,
     },
     permition: {
-        type: Boolean
+        type: Boolean,
+        default: false,
     }
 })
 
 //schema.plugin(mongoosePaginate)
 
-module.exports = mongoose.model(
+module.exports = model(
     'events',
     schema
 )
