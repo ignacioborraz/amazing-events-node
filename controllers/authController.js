@@ -5,15 +5,13 @@ const {accountVerificationEmail} = require('./accountVerificationEmail')
 const {validator: userValidator} = require('../schemas/user')
 const jwt = require('jsonwebtoken')
 const AFTER_VERIFICATION_URL = 'https://amazing-e.herokuapp.com/'
+const {serverError} = require('../responses/shared')
 const {
     userSignedUpResponse, userExistsResponse, userNotFoundResponse, userSignedOutResponse,
-    mustSignInResponse, invalidCredentialsResponse,
+    invalidCredentialsResponse,
 } = require('../responses/auth')
-
-function serverError(err, res) {
-    console.error(err)
-    return res.status(500).end()
-}
+const app = require('../config/firebase')
+const {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} = require("firebase/auth")
 
 function comesFromRegistration(from) {
     return from === 'form'
@@ -62,6 +60,9 @@ async function signUpNewUser(req) {
     return userSignedUpResponse()
 }
 
+/**
+ * @see https://firebase.google.com/docs/auth/web/password-auth
+ */
 const authController = {
     signUp: async (req, res) => {
         /**
@@ -128,7 +129,7 @@ const authController = {
                         id: user._id,
                         role: user.role
                     },
-                    process.env.KEY_JWT,
+                    process.env.JWT_KEY,
                     {expiresIn: 60 * 60 * 24}
                 )
 
@@ -175,6 +176,48 @@ const authController = {
             serverError(error, res)
         }
     },
+
+    _signUp: async (req, res) => {
+        let {email, password} = req.body
+
+        const auth = getAuth()
+
+        return createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+
+                return res.json(user)
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                return res.json({errorCode, errorMessage})
+            });
+    },
+
+    _signIn: async (req, res) => {
+        let {email, password} = req.body
+
+        const auth = getAuth()
+
+        return signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+
+                return res.json(user)
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                return res.json({errorCode, errorMessage})
+            });
+    },
+
+    _signOut: async (req, res) => {
+        /**
+         * @todo
+         */
+    }
 }
 
 module.exports = authController

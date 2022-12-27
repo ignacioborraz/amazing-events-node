@@ -8,8 +8,13 @@ const {
     verifyMail,
     signIn,
     signInWithToken,
-    signOut
+    signOut,
+    _signUp,
+    _signIn,
 } = require('../controllers/authController')
+
+router.post('/v2/signup', _signUp);
+router.post('/v2/signin', _signIn);
 
 router.post('/signup', signUp);
 router.get('/verify/:code', verifyMail);
