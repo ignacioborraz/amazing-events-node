@@ -1,13 +1,12 @@
+require('dotenv').config()
+
 const {connect} = require('mongoose')
 
-connect(process.env.MONGO, {
+connect(process.env.MONGO_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true
 })
-    .then(() => {
-        console.log('connected to database successfully')
-    })
     .catch(error => {
-        console.log(error)
+        console.log('Error: ', error)
         process.exit(1)
     })
