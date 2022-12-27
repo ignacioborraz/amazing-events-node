@@ -1,14 +1,14 @@
 const passport = require('passport')
 const passportJwt = require('passport-jwt')
 
-const {KEY_JWT} = process.env
+const {JWT_KEY} = process.env
 const User = require('../models/User')
 
 passport.use(
     new passportJwt.Strategy(
         {
             jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: KEY_JWT
+            secretOrKey: JWT_KEY
         },
         async (jwt_payload,done) => {
             try {
